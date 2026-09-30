@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { removeItem, updateQuantity, addItem } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  // Calculate total amount for all products in the cart
+  // Calcula el monto total acumulado para todos los productos en el carrito
   const calculateTotalAmount = () => {
     return cart.reduce(
       (total, item) => total + item.quantity * parseFloat(item.cost.substring(1)),
@@ -17,23 +17,24 @@ const CartItem = ({ onContinueShopping }) => {
 
   const handleContinueShopping = (e) => {
     e.preventDefault();
-    onContinueShopping(e); // Notify the parent component to show the plant listing again
+    onContinueShopping(e); // Notifica al componente padre para volver a la lista de plantas
   };
 
-
-
+  // Incrementa la cantidad de un artículo mediante updateQuantity (o opcionalmente addItem)
   const handleIncrement = (item) => {
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Decrementa la cantidad o elimina el artículo con removeItem si la cantidad llega a 0
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
       dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
     } else {
-      dispatch(removeItem(item.name)); // Remove the item when its quantity would drop to 0
+      dispatch(removeItem(item.name)); // Elimina completamente el elemento del carrito
     }
   };
 
+  // Elimina completamente un producto del carrito mediante removeItem
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
@@ -42,7 +43,7 @@ const CartItem = ({ onContinueShopping }) => {
     alert('Functionality to be added for future reference');
   };
 
-  // Calculate total cost based on quantity for an item
+  // Calcula el costo total específico para un tipo de producto según su cantidad
   const calculateTotalCost = (item) => {
     return (item.quantity * parseFloat(item.cost.substring(1))).toFixed(2);
   };
@@ -79,5 +80,4 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
 export default CartItem;
-
 
